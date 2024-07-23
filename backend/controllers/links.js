@@ -1,5 +1,4 @@
 const linksRouter = require('express').Router()
-const mongoose = require('mongoose')
 const Link = require('../models/link')
 
 linksRouter.get('/', async (request, response, next) => {
@@ -26,6 +25,4 @@ linksRouter.get('/:id', async (request, response, next) => {
     }
 })
 
-module.exports = {
-    linksRouter
-}
+module.exports = linksRouter
