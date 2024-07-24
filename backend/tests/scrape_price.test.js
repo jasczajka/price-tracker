@@ -15,9 +15,8 @@ describe('price scraper', () => {
     beforeEach(async () => {
         await Link.deleteMany()
     
-        const newLink = new Link(helper.initialLinks[0])
-    
-        await newLink.save()
+        
+        await helper.createUser(api)
     })
     test('correctly scrapes non-discounted price', async () => {
 
@@ -33,16 +32,23 @@ describe('price scraper', () => {
 
 describe.only('when there is a link saved', () => {
     beforeEach(async () => {
+
         await Link.deleteMany()
-    
-        const newLink = new Link(helper.initialLinks[0])
-    
-        await newLink.save()
+        await helper.createUser(api)
+
     })
     test.only('correctly gets the links from api', async () => {
-        const response = await api.get('/api/links')
-        console.log(response.body)
+
+        const token = await helper.getJwtToken(api)
+        await helper.createLinkForUser(api, token, helper.initialLinks[0])
+
+
+        const response = await api
+            .get('/api/links')
+            .set('Authorization', `Bearer ${token}`)
+        console.log('test gets link', response.body)
         assert.deepStrictEqual(response.body.length, helper.initialLinks.length)
+
     })
 })
 

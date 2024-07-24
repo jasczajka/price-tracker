@@ -25,4 +25,17 @@ linksRouter.get('/:id', async (request, response, next) => {
     }
 })
 
+linksRouter.post('/', async (request, response, next) => {
+    try{
+        const link = new Link(request.body)
+        const savedLink = await link.save()
+
+        response.status(201).json(savedLink)
+
+    }
+    catch(error){
+        next(error)
+    }
+})
+
 module.exports = linksRouter
