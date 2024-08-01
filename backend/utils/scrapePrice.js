@@ -12,7 +12,7 @@ const userAgents = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15'
 ]
-const TIMEOUT = 8000
+const TIMEOUT = 150000
 const generateRandomUA = () => {    
     const randomUAIndex = Math.floor(Math.random() * userAgents.length);
     return userAgents[randomUAIndex];
@@ -57,6 +57,26 @@ const scrapePrice = async (link , selectorNoDiscount, selectorDiscount) => {
     }
   }
 }
+const scrapeContent = async (url) => {
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    defaultViewport: null,
+  })
+
+  const [page] = await browser.pages()
+  await page.setUserAgent(generateRandomUA())
+  await page.goto(url,{
+      waitUntil: 'networkidle2',
+  })
+  const content = await page.evaluate(() => document.querySelector('*').outerHTML)
+  //const content = await page.content()
+  console.log('content scraped')
+  await browser.close()
+  return content
+
+
+}
 
 const checkForNewPrices = async () => {
     let links = await Link.find()
@@ -92,4 +112,4 @@ const checkForNewPrices = async () => {
 
 }
 
-module.exports = {scrapePrice, checkForNewPrices}
+module.exports = {scrapePrice, checkForNewPrices, scrapeContent}

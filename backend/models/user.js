@@ -3,11 +3,18 @@ const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema({
     username: {
         type: String, 
-        required: true
+        required: true,
+        unique: true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: function(v){
+                return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v)
+            },
+            message: props => `${props.value} is not a valid email`
+        }
     },
     passwordHash: String,
     links: [

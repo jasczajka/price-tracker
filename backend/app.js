@@ -8,6 +8,7 @@ const schedule = require('node-schedule')
 const loginRouter = require('./controllers/login')
 const linksRouter = require('./controllers/links')
 const usersRouter = require('./controllers/users')
+const renderRouter = require('./controllers/renders')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 
@@ -26,11 +27,12 @@ app.use(middleware.requestLogger)
 app.use('/api/login', loginRouter)
 app.use('/api/links', middleware.userValidator, linksRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/render', renderRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
-if(process.env.NODE_ENV !== 'test'){
-    schedule.scheduleJob('* * * * *', checkForNewPrices )
-}
+// if(process.env.NODE_ENV !== 'test'){
+//     schedule.scheduleJob('* * * * *', checkForNewPrices )
+// }
 
 module.exports = app
