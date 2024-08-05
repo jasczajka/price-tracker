@@ -1,10 +1,10 @@
 import LinkTable from "./LinkTable"
 import Header from "./Header"
- const MainPage = ({links}) => {
+ const MainPage = ({links, setLinks}) => {
    return (
     <>
-        <Header/>
-        <LinkTable links = {links}/>
+        <Header setLinks = {setLinks } links = {links}/>
+        <LinkTable links = {links} setLinks = {setLinks}/>
     </>
    )
 }

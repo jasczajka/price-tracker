@@ -12,8 +12,9 @@ linksRouter.get('/', async (request, response, next) => {
 linksRouter.get('/:id', async (request, response, next) => {
     try{
         const link = await Link.findById(request.params.id)
+        
         if(link){
-            response.json(links)
+            response.json(link)
         }
         else{
             response.status(404).end()
@@ -29,9 +30,19 @@ linksRouter.post('/', async (request, response, next) => {
     try{
         const link = new Link(request.body)
         const savedLink = await link.save()
-
+        console.log('saved link: ', savedLink)
         response.status(201).json(savedLink)
 
+    }
+    catch(error){
+        next(error)
+    }
+})
+
+linksRouter.delete('/:id', async (request, response, next) => {
+    try{
+        await Link.findByIdAndDelete(request.params.id)
+        return response.status(204).end()
     }
     catch(error){
         next(error)

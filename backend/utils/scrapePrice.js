@@ -12,7 +12,7 @@ const userAgents = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15'
 ]
-const TIMEOUT = 150000
+const TIMEOUT = 15000
 const generateRandomUA = () => {    
     const randomUAIndex = Math.floor(Math.random() * userAgents.length);
     return userAgents[randomUAIndex];
@@ -32,28 +32,64 @@ const scrapePrice = async (link , selectorNoDiscount, selectorDiscount) => {
   })
   const content = await page.evaluate(() => document.body.textContent);
   //console.log(content)
-  try{
-    page.setDefaultTimeout(TIMEOUT)
-    const priceElement = await page.waitForSelector(selectorDiscount)
-    
-    const discountedPrice = await page.evaluate(element => element.textContent, priceElement);
-    const priceAsNumber = +discountedPrice.replace(/[A-Za-złŁ ]/g,'').replace(',','.')
-    //console.log(priceAsNumber)
-    await browser.close()
-    return priceAsNumber
-  } catch(error){
-    console.log(error.name)
-    if(error.name == "TimeoutError"){
-      console.log("no discount, looking for regular price")
-      //seraching for non-discounted price
+
+  //only regular selector
+  if(!selectorDiscount){
+    try{
+      console.log("only regular selector specified, looking for regular price")
       const priceElement = await page.waitForSelector(selectorNoDiscount)
       const price = await page.evaluate(element => element.textContent, priceElement);
       const priceAsNumber = +(price.replace(/[A-Za-złŁ ]/g,'').replace(',','.'))
       await browser.close()
       return priceAsNumber
     }
-    else{
-      throw error
+    catch(error){
+      if(error.name == "TimeoutError"){ 
+        console.log('check timed out')
+      }   
+      else{
+        throw error
+      }
+    }
+  }
+
+
+  //both selectors
+  else{
+    try{
+      
+      page.setDefaultTimeout(TIMEOUT)
+      const priceElement = await page.waitForSelector(selectorDiscount)
+      
+      const discountedPrice = await page.evaluate(element => element.textContent, priceElement);
+      const priceAsNumber = +discountedPrice.replace(/[A-Za-złŁ ]/g,'').replace(',','.')
+      //console.log(priceAsNumber)
+      await browser.close()
+      return priceAsNumber
+    } catch(error){
+      console.log(error.name)
+      if(error.name == "TimeoutError"){
+        console.log("no discount, looking for regular price")
+        try{
+          console.log("only regular selector specified, looking for regular price")
+          const priceElement = await page.waitForSelector(selectorNoDiscount)
+          const price = await page.evaluate(element => element.textContent, priceElement);
+          const priceAsNumber = +(price.replace(/[A-Za-złŁ ]/g,'').replace(',','.'))
+          await browser.close()
+          return priceAsNumber
+        }
+        catch(error){
+          if(error.name == "TimeoutError"){ 
+            console.log('check timed out')
+          }   
+          else{
+            throw error
+          }
+        }
+      }
+      else{
+        throw error
+      }
     }
   }
 }

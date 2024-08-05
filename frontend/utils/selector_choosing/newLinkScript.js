@@ -38,7 +38,23 @@ const addNewLink = async (loadingHook) => {
                 loadingHook('waiting for user to choose the price on url')
                 const selectors = await getSelectorsFromUser(openedWindow)
                 const newLinkName = prompt('Please give the name of the product')
-                console.log('object to send: ', {name: newLinkName, selectors: selectors})
+                
+                loadingHook('waiting for price from server...')
+                const price = await linkService.getPrice(url, selectors[0], selectors[1])
+                console.log('price scraped: ', price)
+                if (confirm(`is the price correct?: ${price}`)){
+                    const newLinkObject = {
+                        name: newLinkName,
+                        link: url,
+                        regularSelector: selectors[0],
+                        discountSelector: selectors[1],
+                        latestPrice: price,
+                        isPriceSeen: true
+                    }
+                    console.log('object to send: ', newLinkObject)
+                    const newLink = await linkService.postNewLink(newLinkObject)
+                    return newLink
+                }
                 loadingHook('')
                 openedWindow.close()
             }

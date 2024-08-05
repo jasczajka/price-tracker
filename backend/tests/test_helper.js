@@ -3,7 +3,7 @@ const initialLinks =
     {
         name: 'buty vans',
         link: 'https://www.zalando.pl/vans-authentic-tenisowki-niskie-czarny-va212z002-802.html?size=43',
-        regularSelector: 'span.sDq_FX._4sa1cA.dgII7d.HlZ_Tf',
+        regularSelector: 'span.sDq_FX._4sa1cA.dgII7d.Km7l2y',
         discountSelector: 'span.sDq_FX._4sa1cA.dgII7d.HlZ_Tf'
     }
 ]
@@ -17,7 +17,7 @@ const createUser = async (api) => {
             password: 'password',
             email: 'user@user.com'
         })
-    console.log('helper create user: ', response.body)
+    //console.log('helper create user: ', response.body)
     return response.body.id
 }   
 const getJwtToken = async (api) => {
@@ -28,7 +28,7 @@ const getJwtToken = async (api) => {
             username: 'user',
             password: 'password'
         })
-    console.log('helper token: ', response.body.token)
+    //console.log('helper token: ', response.body.token)
     return response.body.token
 }
 
@@ -38,7 +38,7 @@ const createLinkForUser = async (api, token, link) => {
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${token}`)
         .send(link)
-        console.log('helper created link: ', response.body)
+        // console.log('helper created link: ', response.body)
     return response.body
 }
 

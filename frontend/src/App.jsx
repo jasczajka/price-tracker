@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import MainPage from './components/MainPage'
-
+import linkService from '../services/linkService'
 
 
 
@@ -22,11 +22,11 @@ function App() {
   
 
   useEffect(()=> {
-    setLinks(initialLinks)
+    linkService.getAll().then(receivedLinks => setLinks(receivedLinks))
   }, [])
   return (
     <>
-      <MainPage links = {initialLinks} />
+      <MainPage links = {links} setLinks = {setLinks} />
     </>
   )
 }

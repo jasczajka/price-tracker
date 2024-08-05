@@ -15,7 +15,6 @@ const linkSchema = new mongoose.Schema({
         },
         discountSelector: {
             type: String,
-            required: true
         },
         latestPrice: {
             type: Number,
@@ -38,7 +37,8 @@ const linkSchema = new mongoose.Schema({
 linkSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
-
+        returnedObject.createdAt = returnedObject.createdAt
+        returnedObject.updatedAt = returnedObject.updatedAt
         delete returnedObject._id
         delete returnedObject.__v
 
