@@ -7,6 +7,7 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 
 const app = require('../app')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -14,8 +15,8 @@ const api = supertest(app)
 describe('price scraper', () => {
     beforeEach(async () => {
         await Link.deleteMany()
-        
-        
+        await User.deleteMany() 
+               
         await helper.createUser(api)
     })
     test('correctly scrapes non-discounted price', async () => {

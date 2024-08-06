@@ -1,16 +1,7 @@
 import LinkRow from "./LinkRow"
 import linkService from "../../services/linkService"
-const LinkTable = ({links, setLinks}) => {
+const LinkTable = ({links, setLinks, handleDelete}) => {
 
-
-    const handleDelete = (id) => {
-        const linkToDelete = links.find(link => link.id === id)
-        console.log('link to delete: ', linkToDelete)
-        if(confirm(`delete ${linkToDelete.name} ?`)){
-            linkService.deleteLink(id)
-            .then(setLinks(links.filter(link => link.id !== id)))
-        }
-    }
 
     return(
         <table>

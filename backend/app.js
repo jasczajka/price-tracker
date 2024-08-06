@@ -26,10 +26,10 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/login', loginRouter)
-app.use('/api/links', linksRouter)
+app.use('/api/links', middleware.userValidator, linksRouter)
 app.use('/api/users', usersRouter)
-app.use('/api/render', renderRouter)
-app.use('/api/prices', pricesRouter)
+app.use('/api/render', middleware.userValidator, renderRouter)
+app.use('/api/prices', middleware.userValidator, pricesRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

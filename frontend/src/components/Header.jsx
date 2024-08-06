@@ -1,7 +1,5 @@
 import addNewLink from '../../utils/selector_choosing/newLinkScript'
-import { useState } from 'react'
-const Header = ({links, setLinks}) => {
-    const [status, setStatus] = useState('')
+const Header = ({links, setLinks, setStatus}) => {
 
     const handleNewLink = async (event) => {
         event.preventDefault()
@@ -17,12 +15,17 @@ const Header = ({links, setLinks}) => {
     }
     return ( 
     <>
-    <h1>Price Track</h1>
-    <h1>Log in</h1>
-    <button onClick={handleNewLink}>
+    
+    
+
+
+        <button 
+            title = "Choose a regular selector if you want to track only one element, in case of 2 price elements, choose also the discounted element"
+            onClick={handleNewLink}>
             New link
-    </button>
-    {<h1>{status}</h1>}
+        </button>
+        
+        
     </>
     )
     

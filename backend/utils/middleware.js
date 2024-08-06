@@ -15,8 +15,9 @@ const unknownEndpoint = (request, response) => {
 
 const userValidator = async (request, response, next) => {
     try{
-        const authorization = request.get('authorization')
+        const authorization = request.get('Authorization')
         if(authorization && authorization.startsWith('Bearer ')){
+            
             let token = authorization.replace('Bearer ', '')
             const decodedToken = jwt.verify(token, process.env.SECRET)
             if(decodedToken.id){
@@ -33,6 +34,7 @@ const userValidator = async (request, response, next) => {
         }
     }
     catch(error){
+        console.log('caught error: ', error.name)
         next(error)
     }
 }
@@ -45,8 +47,16 @@ const errorHandler = (error, request, response, next) => {
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
     }
-
-    next(error)
+    else if (error.name === 'TokenExpiredError'){
+        return response.status(401).json({error: error.name})
+    }
+    else if (error.name === 'MongoServerError' && error.code === 11000){
+        return response.status(400).json({error: 'user with this username already exists'})
+    }
+    else{
+        console.log('unhandled error: ',  error.code)
+        return response.status(500).end()
+    }
 }
 module.exports = {
     requestLogger,

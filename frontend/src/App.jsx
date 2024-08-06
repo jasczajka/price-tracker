@@ -1,32 +1,102 @@
 import { useState, useEffect } from 'react'
-import MainPage from './components/MainPage'
+import Header from './components/Header'
+import LinkTable from './components/LinkTable'
+import LoginForm from './components/LoginForm'
+import RegisterForm from './components/RegisterForm'
+import LogoutButton from './components/LogoutButton'
 import linkService from '../services/linkService'
 
 
-
 function App() {
-  const initialLinks = [
-    {
-      name: 'buty vans',
-      link: 'https://www.zalando.pl/vans-authentic-tenisowki-niskie-czarny-va212z002-802.html?size=43',
-      regularSelector: 'span.sDq_FX._4sa1cA.dgII7d.HlZ_Tf',
-      discountSelector: 'span.sDq_FX._4sa1cA.dgII7d.HlZ_Tf',
-      latestPrice: 269,
-      isPriceSeen: true,
-      createdAt: '2024-07-23T20:05:45.844Z',
-      updatedAt: '2024-07-23T20:11:06.023Z',
-      id: '66a00d19116272917049f394'
-    }
-  ]
-  const [links, setLinks] = useState([])
   
+  const [status, setStatus] = useState('')
+  const [links, setLinks] = useState([])
+  const [user, setUser] = useState(null)
+
+
+
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    window.localStorage.clear()
+    setUser(null)
+  }
+
+  const handleDelete = (id) => {
+    const linkToDelete = links.find(link => link.id === id)
+    console.log('link to delete: ', linkToDelete)
+    if(confirm(`delete ${linkToDelete.name} ?`)){
+        linkService.deleteLink(id)
+        .then(setLinks(links.filter(link => link.id !== id)))
+    }
+  }
+
 
   useEffect(()=> {
-    linkService.getAll().then(receivedLinks => setLinks(receivedLinks))
+    const loggedUserJSON = window.localStorage.getItem('loggedPriceTrackAppUser')
+    if (loggedUserJSON){
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      linkService.setToken(user.token)
+    }
+    
   }, [])
+
+
+  useEffect(() => {
+    async function awaitLinks(){
+      if (user) {
+          try{
+          const receivedLinks = await linkService.getAll()
+          setLinks(receivedLinks)
+          console.log(receivedLinks)
+          //linkService.getAll().then(receivedLinks => setLinks(receivedLinks))
+        }
+        catch(error){
+          console.log(error)
+          if(error.response){
+            if(error.response.data.error === 'TokenExpiredError'){
+              window.localStorage.clear()
+              setUser(null)
+              setStatus('Login expired')
+              setTimeout(() => {
+                setStatus('')
+              }, 5000)
+            }
+          }
+        }
+      }
+    }
+    awaitLinks()
+
+  }, [user])
+
+
+      
+
   return (
     <>
-      <MainPage links = {links} setLinks = {setLinks} />
+      <h1>Price Track</h1>
+      <h1>{status}</h1>
+      {user === null ? 
+        
+        (
+          <>
+            <LoginForm setStatus = {setStatus}  setUser = {setUser} />
+            <RegisterForm setStatus = {setStatus} />
+          </>
+        )  
+        
+        :
+        
+        (
+          <>
+            <Header setLinks = {setLinks } links = {links} status = {status} setStatus = {setStatus} user = {user} />
+            <LogoutButton handleLogout={handleLogout}/>
+            <LinkTable links = {links} setLinks = {setLinks} handleDelete={handleDelete}/>
+          </>
+        )
+      }
+      
     </>
   )
 }

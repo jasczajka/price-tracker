@@ -1,5 +1,14 @@
 import getSelectorsFromUser from './getSelectorsFromUser'
 import linkService from '../../services/linkService'
+const TIMEOUT = 15000
+const timeoutPromise = (ms) => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(new Error('time out error'))
+        }, ms)
+    })
+}
+
 const addNewLink = async (loadingHook) => {
     const url = prompt('Please give the url of the product')
     if(!url) return
@@ -7,7 +16,9 @@ const addNewLink = async (loadingHook) => {
 
     try{
         
-        const response = await linkService.getHtml(url)
+        
+        const response = await Promise.race([linkService.getHtml(url), timeoutPromise(TIMEOUT)])
+
         console.log(response)
     
         const encodedPageContent = response.data
