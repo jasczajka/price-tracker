@@ -44,6 +44,7 @@ const getAll = async() => {
 
     const response = await axiosInstance.get(`${baseUrl}`)
     const links = response.data
+
     return links.map(link => {
         return{
             ...link,
@@ -51,6 +52,7 @@ const getAll = async() => {
             updatedAt: new Date(link.updatedAt)
         }
     })
+
 }
 const getPrice = async(url, regularSelector, discountSelector) => {
 
@@ -71,9 +73,7 @@ const getPrice = async(url, regularSelector, discountSelector) => {
     return response.data.price
 }
 
-const postNewLink = async(newLinkObject) => {
-
-
+const postNewLink = async (newLinkObject) => {
 
     const response = await axiosInstance.post(baseUrl, newLinkObject)
     console.log(response)
@@ -85,10 +85,20 @@ const postNewLink = async(newLinkObject) => {
     }
 }
 
+const updateLink = async (link) => {
+    const response = await axiosInstance.put(`${baseUrl}/${link.id}`, link)
+    const updatedLink = response.data
+    return {
+        ...updatedLink.data,
+        createdAt: new Date(updatedLink.createdAt),
+        updatedAt: new Date(updatedLink.updatedAt)
+    }
+}   
+
 const deleteLink = async (id) => {
 
     const response = await axiosInstance.delete(`${baseUrl}/${id}`)
     return response.data
 }
 
-export default {getHtml, getAll, getPrice, postNewLink, deleteLink, setToken}
+export default {getHtml, getAll, getPrice, postNewLink, deleteLink, setToken, updateLink}

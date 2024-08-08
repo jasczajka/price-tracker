@@ -49,7 +49,14 @@ function App() {
           const receivedLinks = await linkService.getAll()
           setLinks(receivedLinks)
           console.log(receivedLinks)
-          //linkService.getAll().then(receivedLinks => setLinks(receivedLinks))
+          receivedLinks.forEach(async link => {
+            if(link.isPriceSeen === false){
+              await linkService.updateLink({
+                ...link,
+                isPriceSeen: true
+              })
+            }
+          })
         }
         catch(error){
           console.log(error)

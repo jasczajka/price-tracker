@@ -2,9 +2,9 @@ import getSelectorsFromUser from './getSelectorsFromUser'
 import linkService from '../../services/linkService'
 const TIMEOUT = 15000
 const timeoutPromise = (ms) => {
-    return new Promise((resolve) => {
+    return new Promise((_, reject) => {
         setTimeout(() => {
-            resolve(new Error('time out error'))
+            reject(new Error('time out error'))
         }, ms)
     })
 }

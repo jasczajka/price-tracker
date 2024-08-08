@@ -33,11 +33,33 @@ describe('price scraper', () => {
 
 })
 
-describe('when there is a link saved', () => {
+describe.only('when there is a link saved', () => {
     beforeEach(async () => {
-
+        await User.deleteMany() 
         await Link.deleteMany()
         await helper.createUser(api)
+    })
+    test.only('correctly updates link from api', async () => {
+        const token = await helper.getJwtToken(api)
+        await helper.createLinkForUser(api, token, helper.initialLinks[0])
+
+        const linkBeforeUpdate = (await Link.findOne()).toJSON()
+        console.log('link to be updated: ' ,linkBeforeUpdate)
+
+        const linkToBeUpdated = {
+            ...linkBeforeUpdate,
+            scrapeError: true
+        }
+        
+        const response = await api
+            .put(`/api/links//${linkToBeUpdated.id}`)
+            .send(linkToBeUpdated) 
+            .set('Authorization', `Bearer ${token}`)
+
+
+        const linkAfterUpdate = response.body
+        console.log('link after update ', linkAfterUpdate)
+        assert.deepStrictEqual(linkAfterUpdate.scrapeError, (!linkBeforeUpdate.scrapeError))
     })
     test('correctly gets the links from api', async () => {
 
@@ -58,18 +80,17 @@ describe('when there is a link saved', () => {
         await helper.createLinkForUser(api, token, helper.initialLinks[0])
 
         const linksBeforeDelete = await Link.find()
-        console.log('link before delete : ', linksBeforeDelete)
         const link = await Link.findOne()
 
         const response = await api
             .delete(`/api/links//${link.id}`) 
             .set('Authorization', `Bearer ${token}`)
-        console.log(response.body)
 
         const linksAfterDeleteCount = (await Link.find()).length
-        console.log('link after delete count: ', linksAfterDeleteCount)
         assert.deepStrictEqual(linksAfterDeleteCount, helper.initialLinks.length - 1)
     })
+
+    
 })
 
 

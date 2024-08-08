@@ -24,6 +24,10 @@ const linkSchema = new mongoose.Schema({
             type: Boolean,
             default: true
         },
+        scrapeError: {
+            type: Boolean,
+            default: false
+        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

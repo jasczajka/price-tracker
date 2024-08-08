@@ -32,7 +32,7 @@ linksRouter.post('/', async (request, response, next) => {
         console.log(request)
         const user = await User.findById(request.body.user);
         if (!user) {
-            return response.status(404).json({ error: 'User not found' });
+            return response.status(404).json({ error: 'user not found' });
         }
 
         const link = new Link(request.body)
@@ -46,6 +46,26 @@ linksRouter.post('/', async (request, response, next) => {
         console.log('saved link: ', savedLink)
         response.status(201).json(savedLink)
 
+    }
+    catch(error){
+        next(error)
+    }
+})
+
+linksRouter.put('/:id', async (request, response, next) => {
+    try{
+        const user = await User.findById(request.body.user)
+        if(!user){
+            return response.status(404).json({error: 'user not found'})
+        }
+        
+        const link = request.body
+        const updatedLink = await Link.findByIdAndUpdate(
+            request.params.id,
+            link,
+            {new: true, runValidators: true, context: 'query'}
+        ) 
+        response.json(updatedLink)
     }
     catch(error){
         next(error)

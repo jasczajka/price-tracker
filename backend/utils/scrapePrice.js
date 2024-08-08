@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer')
 const mongoose = require('mongoose')
 const Link = require('../models/link')
 const schedule = require('node-schedule')
+const logger = require('./logger')
 
 const userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
@@ -122,20 +123,42 @@ const checkForNewPrices = async () => {
         const discountLink = link.link
         const selectorDiscount = link.regularSelector
         const selectorNoDiscount = link.discountSelector
-        const price = await scrapePrice(discountLink, selectorNoDiscount, selectorDiscount)
+        try{
+          const price = await scrapePrice(discountLink, selectorNoDiscount, selectorDiscount)
+        }
+        catch(error){
+          console.log(`error scraping price for ${link.name} with id ${link.id}, setting price to null`)
+          logger.error(`error scraping price for ${link.name} with id ${link.id}, setting price to null`)
+          const linkWithError = {
+            ...link,
+            scrapeError: true
+          }
+
+          await Link.findByIdAndUpdate(link.id, linkWithError, {new: true, runValidators: true, context: 'query'})
+        }
 
         if(!link.latestPrice){
             console.log(`no price in database found for ${link.name}, inserting ${price}`)
-            let updatedLink = link
-                updatedLink.latestPrice = price
-                const returnedUpdatedLink = await Link.findByIdAndUpdate(link.id, updatedLink, {new: true})
-        }
+            let updatedLink ={
+              ...link,
+              latestPrice: price,
+              priceError: false
+            } 
+
+            const returnedUpdatedLink = await Link.findByIdAndUpdate(link.id, updatedLink, {new: true, runValidators: true, context: 'query'})
+        
+          }
         else{
             if(price !== link.latestPrice){
                 console.log(`price for ${link.name} changed, it's now ${price}, used to be ${link.price}`)
-                let updatedLink = link
-                updatedLink.latestPrice = price
-                const returnedUpdatedLink = await Link.findByIdAndUpdate(link.id, updatedLink, {new: true})
+                let updatedLink ={
+                  ...link,
+                  latestPrice: price,
+                  isPriceSeen: false,
+                  priceError: false
+                } 
+
+                const returnedUpdatedLink = await Link.findByIdAndUpdate(link.id, updatedLink, {new: true, runValidators: true, context: 'query'})
                 console.log('updated link from db: ', returnedUpdatedLink)
             }
             else{

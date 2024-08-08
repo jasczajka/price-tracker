@@ -6,19 +6,30 @@
     
 }
 
-.hovered {
-    border: 2px solid var(--hover)
-}
-.regular_price{
+
+.regular-price{
     border: 2px solid var(--regular-price)
 }
-.discounted_price{
+.discounted-price{
     border: 2px solid var(--discounted-price)
 }
-.discounted_price.regular_price {
-    border-width: 4px; /* Increase the border width to create a double border effect */
-    border-style: solid;
-    border-color: var(--regular-price) var(--discounted-price); /* Set border color for each side */
+.discounted-price.regular-price {
+    border: 2px solid var(--regular-price);
+    box-shadow: 0 0 0 2px var(--discounted-price);
+}
+
+.hovered{
+    border: 2px solid var(--hover);
+}
+
+.hovered.regular-price {
+    border: 2px solid var(--regular-price);
+    box-shadow: 0 0 0 2px var(--hover);
+}
+
+.hovered.discounted-price {
+    border: 2px solid var(--discounted-price);
+    box-shadow: 0 0 0 2px var(--hover);
 }
 
 .selector-button-container{

@@ -92,14 +92,14 @@ const getSelectorsFromUser = (window) => {
               
               e.target.classList.remove('hovered')
               regularSelector = getCSSSelector(e.target)
-              e.target.classList.add('regular_price')
+              e.target.classList.add('regular-price')
               isRegularSelectorChosen = true
             }
             if(isDiscountedCaptureSelectorEnabled) {
               console.log("discounted price chosen")
               e.target.classList.remove('hovered')
               discountedSelector = getCSSSelector(e.target)
-              e.target.classList.add('discounted_price')
+              e.target.classList.add('discounted-price')
               isDiscountedSelectorChosen = true
             }
             isRegularCaptureSelectorEnabled = false
@@ -130,7 +130,7 @@ const getSelectorsFromUser = (window) => {
             let attr = attrs.item(i)
             if (attr.name === 'id') selector += `#${attr.value}`
             if (attr.name === 'class') selector += attr.value.split(' ')
-            .filter(c => c !== 'regular_price' && c !== 'discounted_price')
+            .filter(c => c !== 'regular-price' && c !== 'discounted-price')
             .map((c) => `.${c}`).join('');
             if (attr.name === 'name') selector += `[${attr.name}=${attr.value}]`
         }
