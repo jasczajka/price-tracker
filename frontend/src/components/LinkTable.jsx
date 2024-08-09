@@ -4,7 +4,7 @@ const LinkTable = ({links, setLinks, handleDelete}) => {
 
 
     return(
-        <table>
+        <table className='link-table'>
             <thead>
                 <tr>
                     <th>Name</th>

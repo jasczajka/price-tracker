@@ -1,5 +1,5 @@
 import addNewLink from '../../utils/selector_choosing/newLinkScript'
-const Header = ({links, setLinks, setNotification}) => {
+const NewLinkButton = ({links, setLinks, setNotification}) => {
 
     const handleNewLink = async (event) => {
         event.preventDefault()
@@ -17,7 +17,7 @@ const Header = ({links, setLinks, setNotification}) => {
 
     }
     return (
-        <div className='header'>
+        <div className='new-link-button'>
             <button 
                 title = "Choose a regular selector if you want to track only one element, in case of 2 price elements, choose also the discounted element"
                 onClick={handleNewLink}>
@@ -28,4 +28,4 @@ const Header = ({links, setLinks, setNotification}) => {
     
 }
 
-export default Header
+export default NewLinkButton

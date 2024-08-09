@@ -70,7 +70,7 @@ const RegisterForm = ({ setNotification }) => {
             onChange={({ target }) => setPassword(target.value)}
             />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit">register</button>
         </form>  
     )
 }

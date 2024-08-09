@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import Header from './components/Header'
 import LinkTable from './components/LinkTable'
 import LoginForm from './components/LoginForm'
 import RegisterForm from './components/RegisterForm'
-import LogoutButton from './components/LogoutButton'
+import LogoutPanel from './components/LogoutPanel'
 import linkService from '../services/linkService'
-
+import NewLinkButton from './components/NewLinkButton'
+import TitlePanel from './components/TitlePanel'
 
 function App() {
   
@@ -89,7 +89,7 @@ function App() {
 
   return (
     <>
-      <div className='logo'>Price Track</div>
+      <TitlePanel/>
       {notification.message  && <div className={notificationClass}>{notification.message}</div>}
       
       {user === null ? 
@@ -105,9 +105,9 @@ function App() {
         
         (
           <>
-            <Header setLinks = {setLinks } links = {links} notification = {notification} setNotification = {setNotification} user = {user} />
-            <LogoutButton handleLogout={handleLogout}/>
-            <LinkTable links = {links} setLinks = {setLinks} handleDelete={handleDelete}/>
+            <LogoutPanel handleLogout = {handleLogout} user = {user}/>
+            <NewLinkButton setLinks = {setLinks } links = {links} notification = {notification} setNotification = {setNotification} user = {user} />
+            <LinkTable links = {links} setLinks = {setLinks} handleDelete = {handleDelete}/>
           </>
         )
       }
