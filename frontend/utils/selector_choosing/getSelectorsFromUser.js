@@ -16,7 +16,6 @@ const getSelectorsFromUser = (window) => {
       }
 
       function initialize(){
-        // Add custom styling for choosing elements
         const link = document.createElement('link')
         link.rel = 'stylesheet'
         link.href = './utils/selector_choosing/styles.css'
@@ -25,7 +24,7 @@ const getSelectorsFromUser = (window) => {
         const buttonContainer = document.createElement('div')
         buttonContainer.setAttribute('class', 'selector-button-container')
 
-        // Create the buttons
+        //create buttons
         const indicateRegularPriceButton = document.createElement('button')
         indicateRegularPriceButton.textContent = 'Indicate Regular Price'
         indicateRegularPriceButton.setAttribute('class', 'selector-button')
@@ -41,11 +40,11 @@ const getSelectorsFromUser = (window) => {
         confirmSelectionButton.setAttribute('class', 'selector-button')
         confirmSelectionButton.addEventListener('click', submitSelectors)
 
-        // Add the buttons to the container
+        // add buttons
         buttonContainer.appendChild(indicateRegularPriceButton)
         buttonContainer.appendChild(indicateDiscountedPriceButton)
         buttonContainer.appendChild(confirmSelectionButton)
-        // Add the container to the body
+        // add container
         window.document.body.prepend(buttonContainer)
       }
 

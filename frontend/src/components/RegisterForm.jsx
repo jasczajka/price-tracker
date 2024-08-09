@@ -2,7 +2,7 @@ import { useState } from 'react'
 import loginService from '../../services/userService'
 
 
-const RegisterForm = ({ setStatus }) => {
+const RegisterForm = ({ setNotification }) => {
 
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
@@ -15,10 +15,12 @@ const RegisterForm = ({ setStatus }) => {
             username, email, password
           })
           console.log('new user : ', newUser)
-
-          setStatus('Sucess!')
+          setNotification({
+            message: 'sucess',
+            type: 'success'
+          })
           setTimeout(() => {
-            setStatus('')
+            setNotification({message: '', type: ''})
           }, 5000)
     
 
@@ -28,9 +30,12 @@ const RegisterForm = ({ setStatus }) => {
     
         }
         catch(error) {
-          setStatus(error.response.data.error)
+          setNotification({
+            message: error.response.data.error,
+            type: 'error'
+          })
           setTimeout(() => {
-            setStatus('')
+            setNotification({message: '', type: ''})
           }, 5000)
         }
       }

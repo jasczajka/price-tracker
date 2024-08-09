@@ -9,7 +9,7 @@ import linkService from '../services/linkService'
 
 function App() {
   
-  const [status, setStatus] = useState('')
+  const [notification, setNotification] = useState({message: '', type: ''})
   const [links, setLinks] = useState([])
   const [user, setUser] = useState(null)
 
@@ -64,9 +64,12 @@ function App() {
             if(error.response.data.error === 'TokenExpiredError'){
               window.localStorage.clear()
               setUser(null)
-              setStatus('Login expired')
+              setNotification({
+                message: 'Login expired',
+                type: 'error'
+              })
               setTimeout(() => {
-                setStatus('')
+                setNotification({ message: '', type: '' })
               }, 5000)
             }
           }
@@ -78,18 +81,23 @@ function App() {
   }, [user])
 
 
+  const notificationClass = notification.message
+  ? `notification visible ${notification.type}`
+  : 'notification'
+  
       
 
   return (
     <>
-      <h1>Price Track</h1>
-      <h1>{status}</h1>
+      <div className='logo'>Price Track</div>
+      {notification.message  && <div className={notificationClass}>{notification.message}</div>}
+      
       {user === null ? 
         
         (
           <>
-            <LoginForm setStatus = {setStatus}  setUser = {setUser} />
-            <RegisterForm setStatus = {setStatus} />
+            <LoginForm setNotification = {setNotification}  setUser = {setUser} />
+            <RegisterForm setNotification = {setNotification} />
           </>
         )  
         
@@ -97,7 +105,7 @@ function App() {
         
         (
           <>
-            <Header setLinks = {setLinks } links = {links} status = {status} setStatus = {setStatus} user = {user} />
+            <Header setLinks = {setLinks } links = {links} notification = {notification} setNotification = {setNotification} user = {user} />
             <LogoutButton handleLogout={handleLogout}/>
             <LinkTable links = {links} setLinks = {setLinks} handleDelete={handleDelete}/>
           </>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import loginService from '../../services/userService'
 import linkService from '../../services/linkService'
 
-const LoginForm = ({ setStatus, setUser }) => {
+const LoginForm = ({ setNotification, setUser }) => {
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -24,9 +24,12 @@ const LoginForm = ({ setStatus, setUser }) => {
     
         }
         catch(error) {
-          setStatus(error.response.data.error)
+          setNotification({
+            message: error.response.data.error,
+            type: 'error'
+          })
           setTimeout(() => {
-            setStatus('')
+            setNotification({message: '', type: ''})
           }, 5000)
         }
       }

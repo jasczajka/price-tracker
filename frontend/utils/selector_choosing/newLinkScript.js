@@ -9,10 +9,13 @@ const timeoutPromise = (ms) => {
     })
 }
 
-const addNewLink = async (loadingHook) => {
+const addNewLink = async (setNotification) => {
     const url = prompt('Please give the url of the product')
     if(!url) return
-    loadingHook('loading the url...')
+    setNotification({
+        message: 'loading the url...',
+        type: 'info'
+    })
 
     try{
         
@@ -36,7 +39,7 @@ const addNewLink = async (loadingHook) => {
             const bodyContent = doc.body.innerHTML;
 
             if(openedWindow){
-                loadingHook('')
+                setNotification({message: '', type: ''})
                 openedWindow.document.open()
                 openedWindow.document.write(`
                     <!DOCTYPE html>
@@ -46,11 +49,17 @@ const addNewLink = async (loadingHook) => {
                     </html>
                 `)
                 openedWindow.document.close()
-                loadingHook('waiting for user to choose the price on url')
+                setNotification({
+                    message: 'waiting for user to choose the price on url',
+                    type: 'info'
+                })
                 const selectors = await getSelectorsFromUser(openedWindow)
                 const newLinkName = prompt('Please give the name of the product')
                 
-                loadingHook('waiting for price from server...')
+                setNotification({
+                    message: 'waiting for price from server...',
+                    type: 'info'
+                })
                 const price = await linkService.getPrice(url, selectors[0], selectors[1])
                 console.log('price scraped: ', price)
                 if (confirm(`is the price correct?: ${price}`)){
@@ -66,20 +75,20 @@ const addNewLink = async (loadingHook) => {
                     const newLink = await linkService.postNewLink(newLinkObject)
                     return newLink
                 }
-                loadingHook('')
+                setNotification({message: '', type: ''})
                 openedWindow.close()
             }
 
         }
         else{
-            loadingHook('')
+            setNotification({message: '', type: ''})
             return null
         }
         
     }
     catch(error){
         alert('Error loading the product page')
-        loadingHook('')
+        setNotification({message: '', type: ''})
         console.log(error)
     }
 }

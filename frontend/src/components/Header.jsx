@@ -1,32 +1,29 @@
 import addNewLink from '../../utils/selector_choosing/newLinkScript'
-const Header = ({links, setLinks, setStatus}) => {
+const Header = ({links, setLinks, setNotification}) => {
 
     const handleNewLink = async (event) => {
         event.preventDefault()
-        setStatus('waiting for server confirmation')
-        const newLink = await addNewLink(setStatus)
+        setNotification({
+            message: 'waiting for server confirmation',
+            type: 'info'
+        })
+        const newLink = await addNewLink(setNotification)
         if(newLink){
-            setStatus('')
+            setNotification({ message: '', type: '' })
             console.log('new link from server: ', newLink)
             setLinks(links.concat(newLink))
         }
-        setStatus('')
+        setNotification({ message: '', type: '' })
 
     }
-    return ( 
-    <>
-    
-    
-
-
-        <button 
-            title = "Choose a regular selector if you want to track only one element, in case of 2 price elements, choose also the discounted element"
-            onClick={handleNewLink}>
-            New link
-        </button>
-        
-        
-    </>
+    return (
+        <div className='header'>
+            <button 
+                title = "Choose a regular selector if you want to track only one element, in case of 2 price elements, choose also the discounted element"
+                onClick={handleNewLink}>
+                New link
+            </button>
+        </div>
     )
     
 }

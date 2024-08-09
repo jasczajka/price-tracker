@@ -1,38 +1,70 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@font-face {
+  font-family: 'Futura';
+  src: url(../utils/fonts/Futura-Medium.woff);
+}
 
+:root {
+  --text-default: rgba(208, 45, 0, 255);
+  font-family: Futura, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
   color-scheme: light dark;
   color: rgba(208, 45, 0, 255);
-  background-color: rgba(255,255,255,255);
+  background-color: rgba(255, 255, 255, 255);
 
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  display: block;
+  place-items: left;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.logo{
+  font-size: 2.5em;
+  border: 2px solid var(--text-default);
+  text-align: left;
+  padding: 1%;
+}
+
+.notification {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  visibility: hidden;
+  background-color: rgba(255, 255, 255, 0.9); 
+  color: #213547; 
+  border: 1px solid rgba(208, 45, 0, 0.3); 
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1em 0;
+  font-family: var(--text-default);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+
+.notification.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.notification.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.notification-info {
+  color: #90caf9;
+  border: 1px solid #90caf9;
+}
+
+.notification.visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 button {
