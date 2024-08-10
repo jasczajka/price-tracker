@@ -41,7 +41,6 @@ const linkSchema = new mongoose.Schema({
 linkSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
-        returnedObject.latestPrice = returnedObject.latestPrice !== null ? returnedObject.latestPrice.toFixed(2) : null
         delete returnedObject._id
         delete returnedObject.__v
 

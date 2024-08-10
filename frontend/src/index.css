@@ -5,7 +5,8 @@
 
 
 :root {
-  --theme-default: rgba(208, 45, 0, 255);
+  --theme-default: rgba(208, 45, 0);
+  --theme-default-dimmed: rgba(255, 100, 80, 0.25);
   font-family: Futura, system-ui, Avenir, Helvetica, Arial, sans-serif;
   
   color-scheme: light dark;
@@ -94,7 +95,8 @@ button:hover {
 
 .logout-panel{
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 1em;
 }
 table {
@@ -109,13 +111,60 @@ th, td {
   text-align: left; 
   border-bottom: 1px solid #ddd; 
 }
-th{
+thead{
   border-bottom: 2px solid var(--theme-default);
 }
+.sort-button{
+  cursor: pointer;
+  position: relative;
+
+}
+.sort-button::after {
+  color: var(--theme-default-dimmed);
+  content: '↓';
+  position: absolute;
+  padding-left: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: color 0.25s
+}
+.active-sort.sort-down::after{
+  content: '↓';
+  color: var(--theme-default);
+}
+.active-sort.sort-up::after{
+  content: '↑';
+  color: var(--theme-default);
+}
+
+.sort-button:hover::after {
+  color: var(--theme-default); 
+}
+
+.link-table th span {
+  display: inline-block;
+  font-size: 0.8em;
+  margin-left: 0.5em;
+}
+
+.color-tooltip-link {
+  color: var(--theme-default-dimmed);
+  transition: color 0.25s;
+  
+}
+
+.color-tooltip-link:hover{
+  cursor: pointer;
+  position: relative;
+  color: var(--theme-default)
+}
+td a {
+  color: var(--theme-default-dimmed)
+}
 .new-price{
-  color: yellow
+  color: rgb(54, 195, 11)
 }
 
 .price-error{
-  color: red
+  color: rgb(145, 27, 139)
 }

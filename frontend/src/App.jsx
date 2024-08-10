@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import LinkTable from './components/LinkTable'
 import LoginForm from './components/LoginForm'
 import RegisterForm from './components/RegisterForm'
@@ -10,9 +10,24 @@ import TitlePanel from './components/TitlePanel'
 function App() {
   
   const [notification, setNotification] = useState({message: '', type: ''})
+  const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'desc'})
   const [links, setLinks] = useState([])
   const [user, setUser] = useState(null)
 
+
+  const sortedLinks = useMemo(() => {
+        return [...links].sort((a, b) => {
+          if( a[sortConfig.key] < b[sortConfig.key]){
+            return sortConfig.direction === 'asc' ? -1 : 1
+          }
+          if( a[sortConfig.key] > b[sortConfig.key]){
+            return sortConfig.direction === 'asc' ? 1 : -1
+          }
+          return 0
+        })
+      }
+    , [links, sortConfig])
+    
 
 
   const handleLogout = async (event) => {
@@ -81,6 +96,15 @@ function App() {
   }, [user])
 
 
+  const handleSort = (key) => {
+    let direction = 'asc'
+    if (sortConfig.key === key && sortConfig.direction === 'asc'){
+      direction = 'desc'
+    }
+    setSortConfig({ key, direction })
+    setLinks(sortedLinks)
+  }
+
   const notificationClass = notification.message
   ? `notification visible ${notification.type}`
   : 'notification'
@@ -106,8 +130,8 @@ function App() {
         (
           <>
             <LogoutPanel handleLogout = {handleLogout} user = {user}/>
-            <NewLinkButton setLinks = {setLinks } links = {links} notification = {notification} setNotification = {setNotification} user = {user} />
-            <LinkTable links = {links} setLinks = {setLinks} handleDelete = {handleDelete}/>
+            <NewLinkButton setLinks = {setLinks } links = {sortedLinks} notification = {notification} setNotification = {setNotification} user = {user} />
+            <LinkTable links = {links} setLinks = {setLinks} handleDelete = {handleDelete} handleSort = {handleSort} sortConfig = {sortConfig} />
           </>
         )
       }

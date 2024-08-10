@@ -25,26 +25,18 @@ const getSelectorsFromUser = (window) => {
         buttonContainer.setAttribute('class', 'selector-button-container')
 
         //create buttons
-        const indicateRegularPriceButton = document.createElement('button')
-        indicateRegularPriceButton.textContent = 'Indicate Regular Price'
-        indicateRegularPriceButton.setAttribute('class', 'selector-button')
-        indicateRegularPriceButton.addEventListener('click', enableRegularSelector)
-        
-        const indicateDiscountedPriceButton = document.createElement('button')
-        indicateDiscountedPriceButton.textContent = 'Indicate Discounted Price'
-        indicateDiscountedPriceButton.setAttribute('class', 'selector-button')
-        indicateDiscountedPriceButton.addEventListener('click', enableDiscountedSelector)
-
-        const confirmSelectionButton = document.createElement('button')
-        confirmSelectionButton.textContent = 'Confirm Selection'
-        confirmSelectionButton.setAttribute('class', 'selector-button')
-        confirmSelectionButton.addEventListener('click', submitSelectors)
-
-        // add buttons
-        buttonContainer.appendChild(indicateRegularPriceButton)
-        buttonContainer.appendChild(indicateDiscountedPriceButton)
-        buttonContainer.appendChild(confirmSelectionButton)
-        // add container
+        const buttonsConfig = [
+          { text: 'Indicate Regular Price', handler: enableRegularSelector },
+          { text: 'Indicate Discounted Price', handler: enableDiscountedSelector },
+          { text: 'Confirm Selection', handler: submitSelectors }
+        ];
+        buttonsConfig.forEach(config => {
+          const button = document.createElement('button');
+          button.textContent = config.text;
+          button.className = 'selector-button'; // Ensure this class has the proper styles applied
+          button.addEventListener('click', config.handler);
+          buttonContainer.appendChild(button);
+        });
         window.document.body.prepend(buttonContainer)
       }
 

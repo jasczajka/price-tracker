@@ -1,17 +1,21 @@
 import LinkRow from "./LinkRow"
 import linkService from "../../services/linkService"
-const LinkTable = ({links, setLinks, handleDelete}) => {
-
-
+const LinkTable = ({links, setLinks, handleDelete, handleSort, sortConfig}) => {
+    const getSortClass = (key) => {
+        if (sortConfig.key === key) {
+            return sortConfig.direction === 'asc' ? 'sort-up active-sort' : 'sort-down active-sort'
+        }
+        return ''
+    }
     return(
         <table className='link-table'>
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th onClick={() => handleSort('name')} className={`sort-button ${getSortClass('name')}`}>Name</th>
                     <th>Link</th>
-                    <th>Latest price</th>
-                    <th>Price updated</th>
-                    <th>Created</th>
+                    <th onClick={() => handleSort('latestPrice')} className={`sort-button ${getSortClass('latestPrice')}`}>Latest price</th>
+                    <th onClick={() => handleSort('updatedAt')} className={`sort-button ${getSortClass('updatedAt')}`}>Price updated</th>
+                    <th onClick={() => handleSort('createdAt')} className={`sort-button ${getSortClass('createdAt')}`}>Created</th>
                     <th>Delete</th> 
                 </tr>
             </thead>

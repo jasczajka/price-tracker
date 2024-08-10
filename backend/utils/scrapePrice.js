@@ -28,16 +28,14 @@ const scrapePrice = async (link , selectorNoDiscount, selectorDiscount) => {
   const [page] = await browser.pages()
   await page.setUserAgent(generateRandomUA())
   await page.goto(link,{
-      //waitUntil: "domcontentloaded",
       waitUntil: 'networkidle2',
   })
   const content = await page.evaluate(() => document.body.textContent);
-  //console.log(content)
 
   //only regular selector
   if(!selectorDiscount){
     try{
-      console.log("only regular selector specified, looking for regular price")
+      logger.info("only regular selector specified, looking for regular price")
       const priceElement = await page.waitForSelector(selectorNoDiscount)
       const price = await page.evaluate(element => element.textContent, priceElement);
       const priceAsNumber = +(price.replace(/[A-Za-złŁ ]/g,'').replace(',','.'))
@@ -46,10 +44,12 @@ const scrapePrice = async (link , selectorNoDiscount, selectorDiscount) => {
     }
     catch(error){
       if(error.name == "TimeoutError"){ 
-        console.log('check timed out')
+        logger.error('check timed out')
+        return null
       }   
       else{
-        throw error
+        logger.error('scrape price error: ', error, ' returning null')
+        return null
       }
     }
   }
@@ -64,15 +64,13 @@ const scrapePrice = async (link , selectorNoDiscount, selectorDiscount) => {
       
       const discountedPrice = await page.evaluate(element => element.textContent, priceElement);
       const priceAsNumber = +discountedPrice.replace(/[A-Za-złŁ ]/g,'').replace(',','.')
-      //console.log(priceAsNumber)
       await browser.close()
       return priceAsNumber
     } catch(error){
-      console.log(error.name)
       if(error.name == "TimeoutError"){
-        console.log("no discount, looking for regular price")
+        logger.info("no discount, looking for regular price")
         try{
-          console.log("only regular selector specified, looking for regular price")
+          logger.info("only regular selector specified, looking for regular price")
           const priceElement = await page.waitForSelector(selectorNoDiscount)
           const price = await page.evaluate(element => element.textContent, priceElement);
           const priceAsNumber = +(price.replace(/[A-Za-złŁ ]/g,'').replace(',','.'))
@@ -81,10 +79,12 @@ const scrapePrice = async (link , selectorNoDiscount, selectorDiscount) => {
         }
         catch(error){
           if(error.name == "TimeoutError"){ 
-            console.log('check timed out')
+            logger.error('check timed out')
+            return null
           }   
           else{
-            throw error
+            logger.error('scrape price error: ', error, ' returning null')
+            return null
           }
         }
       }
@@ -106,9 +106,12 @@ const scrapeContent = async (url) => {
   await page.goto(url,{
       waitUntil: 'networkidle2',
   })
+
+ 
+
+
   const content = await page.evaluate(() => document.querySelector('*').outerHTML)
-  //const content = await page.content()
-  console.log('content scraped')
+  logger.info('content scraped')
   await browser.close()
   return content
 
@@ -118,27 +121,37 @@ const scrapeContent = async (url) => {
 const checkForNewPrices = async () => {
     let links = await Link.find()
     links = links.map(link => link.toJSON())
-    console.log('checker, new links: ', links)
+    logger.info('checker, new links: ', links)
     const promises = links.map( async (link) => {
         const discountLink = link.link
         const selectorDiscount = link.regularSelector
         const selectorNoDiscount = link.discountSelector
+        let price = null
         try{
-          const price = await scrapePrice(discountLink, selectorNoDiscount, selectorDiscount)
+          price = await scrapePrice(discountLink, selectorNoDiscount, selectorDiscount)
         }
         catch(error){
-          console.log(`error scraping price for ${link.name} with id ${link.id}, setting price to null`)
-          logger.error(`error scraping price for ${link.name} with id ${link.id}, setting price to null`)
+          logger.error(`error scraping price for ${link.name} with id ${link.id}, latest price: ${link.latestPrice}`)
           const linkWithError = {
             ...link,
             scrapeError: true
           }
 
-          await Link.findByIdAndUpdate(link.id, linkWithError, {new: true, runValidators: true, context: 'query'})
+          await Link.findByIdAndUpdate(link.id, linkWithError, {new: true, context: 'query'})
+        }
+
+        if(!price){
+          logger.error('found price, but its falsy: ', price)
+          const linkWithError = {
+            ...link,
+            scrapeError: true
+          }
+          await Link.findByIdAndUpdate(link.id, linkWithError, {new: true, context: 'query'})
+          return
         }
 
         if(!link.latestPrice){
-            console.log(`no price in database found for ${link.name}, inserting ${price}`)
+            logger.info(`no price in database found for ${link.name}, inserting ${price}`)
             let updatedLink ={
               ...link,
               latestPrice: price,
@@ -149,8 +162,8 @@ const checkForNewPrices = async () => {
         
           }
         else{
-            if(price !== link.latestPrice){
-                console.log(`price for ${link.name} changed, it's now ${price}, used to be ${link.price}`)
+            if(price != link.latestPrice){
+                logger.info(`price for ${link.name} changed, it's now ${price}, used to be ${link.latestPrice}`)
                 let updatedLink ={
                   ...link,
                   latestPrice: price,
@@ -159,10 +172,10 @@ const checkForNewPrices = async () => {
                 } 
 
                 const returnedUpdatedLink = await Link.findByIdAndUpdate(link.id, updatedLink, {new: true, runValidators: true, context: 'query'})
-                console.log('updated link from db: ', returnedUpdatedLink)
+                logger.info('updated link from db: ', returnedUpdatedLink)
             }
             else{
-                console.log(`price for ${link.name} has not changed, it's still ${price}`)
+              logger.info(`price for ${link.name} has not changed, it's still ${price}`)
             }
         }
 
