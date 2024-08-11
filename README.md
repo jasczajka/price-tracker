@@ -5,7 +5,7 @@
   - Backend: Node.js, Express
   - Frontend: React
   - Database: MongoDB with Mongoose
-  - Web Scraping: Custom script for scraping product prices
+  - Web Scraping: Custom script for scraping product prices, puppeteer
 ## Prerequisities
   - Node.js (v14 or higher)
   - MongoDB (installed locally or use a cloud service like MongoDB Atlas)
