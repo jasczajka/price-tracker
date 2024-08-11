@@ -34,7 +34,8 @@ app.use('/api/prices', middleware.userValidator, pricesRouter)
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 if(process.env.NODE_ENV !== 'test'){
-    schedule.scheduleJob('30 * * * *', checkForNewPrices )
+    const interval = process.env.INTERVAL
+    schedule.scheduleJob(`*/${interval} * * * *`, checkForNewPrices )
 }
 
 module.exports = app
