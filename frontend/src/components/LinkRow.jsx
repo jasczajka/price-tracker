@@ -1,4 +1,3 @@
-
 const LinkRow = ({link, handleDelete}) => {
     const priceAsString = link.latestPrice ? link.latestPrice.toFixed(2) : 'not specified'
     return (

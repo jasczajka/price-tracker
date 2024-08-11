@@ -1,5 +1,4 @@
 import LinkRow from "./LinkRow"
-import linkService from "../../services/linkService"
 const LinkTable = ({links, setLinks, handleDelete, handleSort, sortConfig}) => {
     const getSortClass = (key) => {
         if (sortConfig.key === key) {
