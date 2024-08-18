@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer')
-const mongoose = require('mongoose')
 const Link = require('../models/link')
-const schedule = require('node-schedule')
+const User = require('../models/user')
 const logger = require('./logger')
+const sendEmail = require('./mailing').send
 
 const userAgents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
@@ -173,6 +173,15 @@ const checkForNewPrices = async () => {
 
                 const returnedUpdatedLink = await Link.findByIdAndUpdate(link.id, updatedLink, {new: true, runValidators: true, context: 'query'})
                 logger.info('updated link from db: ', returnedUpdatedLink)
+
+                const user =  await User.findById(link.user.toString())
+
+                await sendEmail(
+                  user.email, 
+                  `Price changed for ${link.name}!`, 
+                  `Hi ${user.username}!\nPrice for one of items you have on your watchlist, ${link.name}, has changed from ${link.latestPrice} to ${price}`)
+
+
             }
             else{
               logger.info(`price for ${link.name} has not changed, it's still ${price}`)
