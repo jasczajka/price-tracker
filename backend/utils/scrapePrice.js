@@ -176,10 +176,17 @@ const checkForNewPrices = async () => {
 
                 const user =  await User.findById(link.user.toString())
 
-                await sendEmail(
-                  user.email, 
-                  `Price changed for ${link.name}!`, 
-                  `Hi ${user.username}!\nPrice for one of items you have on your watchlist, ${link.name}, has changed from ${link.latestPrice} to ${price}`)
+                try{
+                  await sendEmail(
+                    user.email, 
+                    `Price changed for ${link.name}!`, 
+                    `Hi ${user.username}!\nPrice for one of items you have on your watchlist, ${link.name}, has changed from ${link.latestPrice} to ${price}`
+                  )
+                }
+                catch(error){
+                  logger.error(`error sending e-mail about ${link.name} for user: ${user.username}: `, error)
+                }
+              
 
 
             }
@@ -193,4 +200,4 @@ const checkForNewPrices = async () => {
 
 }
 
-module.exports = {scrapePrice, checkForNewPrices, scrapeContent}
+module.exports = { scrapePrice, checkForNewPrices, scrapeContent }
