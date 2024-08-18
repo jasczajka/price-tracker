@@ -6,6 +6,7 @@
   - Frontend: React
   - Database: MongoDB with Mongoose
   - Web Scraping: Custom script for scraping product prices, puppeteer
+  - Mailing: nodemailer
 ## Prerequisities
   - Node.js (v14 or higher)
   - MongoDB (installed locally or use a cloud service like MongoDB Atlas)
@@ -15,6 +16,8 @@
   - PORT: Port number on which the backend server will run (default is 3003).
   - SECRET: A secret key used for signing JWT tokens. Change this to a secure random string.
   - INTERVAL: The interval in minutes at which to check product prices.
+  - MAIL_APP_PASSWORD: Password for your email service*
+  - MAIL_APP_USERNAME: Login for your email service*
 ## Usage
 1. Add a New Product
    - Navigate to the "Add Product" page.
@@ -30,3 +33,5 @@
 ## Screenshots
 ![Screenshot 2024-08-11 at 10 13 44](https://github.com/user-attachments/assets/7d782772-fcaa-47b8-ad3c-8e5d1b548c16)
 ![Screenshot 2024-08-11 at 10 17 14](https://github.com/user-attachments/assets/14e8d542-ea21-4be8-9230-70934fe7ff6b)
+
+*App tested only with Gmail App Passwords
