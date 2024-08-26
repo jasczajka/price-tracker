@@ -6,6 +6,7 @@ import LogoutPanel from './components/LogoutPanel'
 import linkService from '../services/linkService'
 import NewLinkButton from './components/NewLinkButton'
 import TitlePanel from './components/TitlePanel'
+import LinkFilter from './components/LinkFilter'
 
 
 function App() {
@@ -13,11 +14,14 @@ function App() {
   const [notification, setNotification] = useState({message: '', type: ''})
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'desc'})
   const [links, setLinks] = useState([])
+  const [filter, setFilter] = useState('');
   const [user, setUser] = useState(null)
 
 
   const sortedLinks = useMemo(() => {
-        return [...links].sort((a, b) => {
+        return [...links]
+        .filter(link => link.name.toLowerCase().includes(filter.toLowerCase()))
+        .sort((a, b) => {
           if( a[sortConfig.key] < b[sortConfig.key]){
             return sortConfig.direction === 'asc' ? -1 : 1
           }
@@ -27,7 +31,7 @@ function App() {
           return 0
         })
       }
-    , [links, sortConfig])
+    , [links, sortConfig, filter])
     
 
 
@@ -103,7 +107,6 @@ function App() {
       direction = 'desc'
     }
     setSortConfig({ key, direction })
-    setLinks(sortedLinks)
   }
 
   const notificationClass = notification.message
@@ -132,7 +135,8 @@ function App() {
           <>
             <LogoutPanel handleLogout = {handleLogout} user = {user}/>
             <NewLinkButton setLinks = {setLinks } links = {sortedLinks} notification = {notification} setNotification = {setNotification} user = {user} />
-            <LinkTable links = {links} setLinks = {setLinks} handleDelete = {handleDelete} handleSort = {handleSort} sortConfig = {sortConfig} />
+            <LinkFilter filter = {filter} setFilter = {setFilter}/>
+            <LinkTable links = {sortedLinks} setLinks = {setLinks} handleDelete = {handleDelete} handleSort = {handleSort} sortConfig = {sortConfig} />
           </>
         )
       }

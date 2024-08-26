@@ -9,7 +9,7 @@
   --theme-default-dimmed: rgba(255, 100, 80, 0.25);
   font-family: Futura, system-ui, Avenir, Helvetica, Arial, sans-serif;
   
-  color-scheme: light dark;
+  color-scheme: light;
   color: rgba(208, 45, 0, 255);
   background-color: rgba(255, 255, 255, 255);
 
@@ -73,18 +73,21 @@ body {
   visibility: visible;
 }
 
-button {
+button, input{
   border-radius: 8px;
   border-color: var(--theme-default);
   color: var(--theme-default);
   border: 1px solid transparent;
-  padding: 0.4em 0.8em;
   margin-top: 0.4em;
   margin-bottom: 0.4em;
   border-color: var(--theme-default);
   font-size: 1em;
   font-family: inherit;
   background-color: rgba(255, 255, 255, 10); 
+}
+button {
+  padding: 0.4em 0.8em;
+  
   cursor: pointer;
   transition: color 0.25s, background-color 0.25s, border-color 0.25s;
 }
