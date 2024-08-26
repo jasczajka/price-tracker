@@ -31,7 +31,7 @@
 3. Monitor Prices
    - View the price history and current price on the "Product List" page, use color guide to know if price is new or an error has ocurred
 ## Screenshots
-<img width="1906" alt="Screenshot 2024-08-26 at 15 44 38" src="https://github.com/user-attachments/assets/14f1ee84-bacc-4244-867f-245ae5f9200a">
-![Screenshot 2024-08-11 at 10 17 14](https://github.com/user-attachments/assets/14e8d542-ea21-4be8-9230-70934fe7ff6b)
+<img width="1906" alt="Screenshot 1" src="https://github.com/user-attachments/assets/14f1ee84-bacc-4244-867f-245ae5f9200a">
+<img width="1906" alt="Screenshot 2" src="https://github.com/user-attachments/assets/14e8d542-ea21-4be8-9230-70934fe7ff6b">
 
 *App works only with Gmail App Passwords for now
